@@ -2,28 +2,34 @@ pipeline {
     agent any
 
     environment {
-        DOCKERHUB_CREDENTIALS_ID = 'dockerhub-credentials'
-        DOCKERHUB_REPO = 'amirdi/devopschain'
+        DOCKERHUB_CREDENTIALS_ID = 'seki'
+        DOCKERHUB_REPO = 's3ki/calculatortest_final'
         DOCKER_IMAGE_TAG = 'ver2'
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/ADirin/devopschain_f2024.git'
+                git branch: 'main', url: 'https://github.com/S3ki/DevOpsTeht.git'
+            }
+        }
+        stage('Check Environment') {
+            steps {
+                // Print the PATH variable to check if Maven is included
+                sh 'echo $PATH'
             }
         }
         stage('Run Tests') {
             steps {
                 // Run the tests first to generate data for Jacoco and JUnit
-                bat 'mvn clean test' // For Windows agents
+                sh 'mvn clean test' // For Windows agents
                 // sh 'mvn clean test' // Uncomment if on a Linux agent
             }
         }
         stage('Code Coverage') {
             steps {
                 // Generate Jacoco report after the tests have run
-                bat 'mvn jacoco:report'
+                sh 'mvn jacoco:report'
             }
         }
         stage('Publish Test Results') {
